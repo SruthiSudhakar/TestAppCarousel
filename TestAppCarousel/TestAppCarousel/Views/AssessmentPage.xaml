@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:TestAppCarousel.ViewModels"
+             xmlns:models="clr-namespace:TestAppCarousel.Models"
+             x:Class="TestAppCarousel.Views.AssessmentPage">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="m one"
+                 IconImageSource="example_icon.png"
+                 Order="Default"
+                 Priority="0"
+                 x:Name="mone"
+                 Command="{Binding MistakeItemPressedCommand}"
+                 CommandParameter="{x:Reference mone}" />
+        <ToolbarItem Text="m two"
+                 IconImageSource="example_icon.png"
+                 Order="Default"
+                 Priority="0" 
+                 x:Name="mtwo"
+                 Command="{Binding MistakeItemPressedCommand}"
+                 CommandParameter="{x:Reference mtwo}" />
+
+        <ToolbarItem Text="m three"
+                 IconImageSource="example_icon.png"
+                 Order="Default"
+                 Priority="0" 
+                 x:Name="mthree"
+                 Command="{Binding MistakeItemPressedCommand}"
+                 CommandParameter="{x:Reference mthree}" />
+        <ToolbarItem Text="m four"
+                 IconImageSource="example_icon.png"
+                 Order="Default"
+                 Priority="0" 
+                 x:Name="mfour"
+                 Command="{Binding MistakeItemPressedCommand}"
+                 CommandParameter="{x:Reference mfour}" />
+        <ToolbarItem Text="Undo"
+                 IconImageSource="example_icon.png"
+                 Order="Default"
+                 Priority="0" 
+                 x:Name="Undo"
+                 Command="{Binding MistakeItemPressedCommand}"
+                 CommandParameter="{x:Reference Undo}" />
+
+    </ContentPage.ToolbarItems>
+    <StackLayout Padding="20">
+        <CarouselView ItemsSource="{Binding StudentGroups}" IndicatorView="indicatorView" x:Name="AssessmentPageName" >
+            <CarouselView.ItemTemplate>
+                <DataTemplate>
+                    <ScrollView>
+                        <StackLayout BindableLayout.ItemsSource="{Binding StudentList}"  Orientation="Horizontal" Spacing="30">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <StackLayout BackgroundColor="AliceBlue">
+                                        <Label Text="{Binding student.Name}" FontSize="25" HorizontalOptions="Center"/>
+                                        <StackLayout BindableLayout.ItemsSource="{Binding CurrentChapter.ChapterShlokas}" Spacing="25">
+                                            <BindableLayout.ItemTemplate>
+                                                <DataTemplate>
+                                                    <StackLayout BindableLayout.ItemsSource="{Binding ShlokaLines}" Spacing="10">
+                                                        <BindableLayout.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <StackLayout  BindableLayout.ItemsSource="{Binding LineWords}" Spacing="5" Orientation="Horizontal">
+                                                                    <BindableLayout.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <Label  Text="{Binding WordText}" FontSize="20" TextColor ="Black" BackgroundColor="{Binding HilightedWord}">
+                                                                                <Label.GestureRecognizers>
+                                                                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type models:StudentAndList}}, Path=SelectMistakeCommand}" CommandParameter="{Binding .}">
+                                                                                    </TapGestureRecognizer>
+                                                                                </Label.GestureRecognizers>
+                                                                            </Label>
+                                                                        </DataTemplate>
+                                                                    </BindableLayout.ItemTemplate>
+                                                                </StackLayout>
+                                                            </DataTemplate>
+                                                        </BindableLayout.ItemTemplate>
+                                                    </StackLayout>
+                                                </DataTemplate>
+                                            </BindableLayout.ItemTemplate>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+                    </ScrollView>
+                </DataTemplate>
+            </CarouselView.ItemTemplate>
+        </CarouselView>
+        <IndicatorView x:Name="indicatorView"
+                       Margin="0,0,0,40"
+                       IndicatorColor="LightGray"
+                       SelectedIndicatorColor="DarkGray"
+                       HorizontalOptions="Center" 
+                       IndicatorSize="18"/>
+    </StackLayout>
+</ContentPage>
