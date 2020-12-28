@@ -11,20 +11,10 @@ namespace TestAppCarousel.Models
     {
         public Student student { get; set; }
         public Chapter CurrentChapter{ get; set; }
-        public Word _selectedWord;
-        public ICommand SelectMistakeCommand { get; private set; }
         public StudentAndList(Student s, Chapter cc)
         {
             student = s;
             CurrentChapter = cc;
-            SelectMistakeCommand = new Command<Word>((e) => SelectedMistakeCommandMethod(e));
         }
-        public void SelectedMistakeCommandMethod(Word word)
-        {
-            _selectedWord = word;
-            MessagingCenter.Send<StudentAndList, StudentAndList>(this, "SelectMistakeType", this);
-            word.HilightedWord = Color.Green;
-        }
-
     }
 }

@@ -12,6 +12,7 @@ namespace TestAppCarousel.Models
         public int Shloka { get; set; }
         public int Line { get; set; }
         public string WordText { get; set; }
+        public List<string> WordTextList { get; set; } = new List<string>();
         private Color _hilightedWord = Color.White; 
         public Color HilightedWord
         {
@@ -23,6 +24,10 @@ namespace TestAppCarousel.Models
             Chapter = chapter;
             Shloka = shloka;
             Line = line;
+            foreach (char c in wordtext)
+            {
+                WordTextList.Add(c.ToString());
+            }
             WordText = wordtext;
         }
     }

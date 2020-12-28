@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:TestAppCarousel.ViewModels"
              xmlns:models="clr-namespace:TestAppCarousel.Models"
-             x:Class="TestAppCarousel.Views.AssessmentPage">
+             x:Class="TestAppCarousel.Views.AssessmentPage"
+             xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+             xmlns:tt="clr-namespace:TestAppCarousel.TouchTracking">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="m one"
                  IconImageSource="example_icon.png"
@@ -41,33 +43,41 @@
                  x:Name="Undo"
                  Command="{Binding MistakeItemPressedCommand}"
                  CommandParameter="{x:Reference Undo}" />
+        <ToolbarItem Text="{Binding TheWord}"
+                 IconImageSource="example_icon.png"
+                 Order="Default"
+                 Priority="0" 
+                 x:Name="word"/>
 
     </ContentPage.ToolbarItems>
     <StackLayout Padding="20">
-        <CarouselView ItemsSource="{Binding StudentGroups}" IndicatorView="indicatorView" x:Name="AssessmentPageName" >
-            <CarouselView.ItemTemplate>
+        <CarouselView ItemsSource="{Binding StudentGroups}" IsSwipeEnabled="False"  x:Name="CarouselViewID">
+            <CarouselView.ItemTemplate  >
                 <DataTemplate>
                     <ScrollView>
-                        <StackLayout BindableLayout.ItemsSource="{Binding StudentList}"  Orientation="Horizontal" Spacing="30">
+                        <StackLayout x:Name ="firstStack" BindableLayout.ItemsSource="{Binding StudentList}"  Orientation="Horizontal" >
                             <BindableLayout.ItemTemplate>
-                                <DataTemplate>
-                                    <StackLayout BackgroundColor="AliceBlue">
+                                <DataTemplate x:DataType="models:StudentAndList">
+                                    <StackLayout >
                                         <Label Text="{Binding student.Name}" FontSize="25" HorizontalOptions="Center"/>
                                         <StackLayout BindableLayout.ItemsSource="{Binding CurrentChapter.ChapterShlokas}" Spacing="25">
                                             <BindableLayout.ItemTemplate>
-                                                <DataTemplate>
-                                                    <StackLayout BindableLayout.ItemsSource="{Binding ShlokaLines}" Spacing="10">
+                                                <DataTemplate x:DataType="models:Shloka">
+                                                    <StackLayout BindableLayout.ItemsSource="{Binding ShlokaLines}" Spacing="5">
                                                         <BindableLayout.ItemTemplate>
-                                                            <DataTemplate>
-                                                                <StackLayout  BindableLayout.ItemsSource="{Binding LineWords}" Spacing="5" Orientation="Horizontal">
+                                                            <DataTemplate x:DataType="models:Line">
+                                                                <StackLayout  BindableLayout.ItemsSource="{Binding LineWords}" Spacing="7" Orientation="Horizontal">
                                                                     <BindableLayout.ItemTemplate>
-                                                                        <DataTemplate>
-                                                                            <Label  Text="{Binding WordText}" FontSize="20" TextColor ="Black" BackgroundColor="{Binding HilightedWord}">
-                                                                                <Label.GestureRecognizers>
-                                                                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type models:StudentAndList}}, Path=SelectMistakeCommand}" CommandParameter="{Binding .}">
-                                                                                    </TapGestureRecognizer>
-                                                                                </Label.GestureRecognizers>
-                                                                            </Label>
+                                                                        <DataTemplate x:DataType="models:Word">
+                                                                            <Grid >
+                                                                                <skia:SKCanvasView BackgroundColor="CadetBlue" Grid.Row="0" Grid.Column="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
+                                                                                            PaintSurface="OnCanvasViewPaintSurface" BindingContext="{Binding  Source={RelativeSource AncestorType={x:Type models:StudentAndList}}}" />
+                                                                                <StackLayout Grid.Row="0" BindableLayout.ItemsSource="{Binding WordTextList}" Orientation="Horizontal"/>
+                                                                                <Grid.Effects>
+                                                                                    <tt:TouchEffect Capture="True"
+                                                                                                    TouchAction="OnTouchEffectAction" />
+                                                                                </Grid.Effects>
+                                                                            </Grid>
                                                                         </DataTemplate>
                                                                     </BindableLayout.ItemTemplate>
                                                                 </StackLayout>
@@ -85,11 +95,16 @@
                 </DataTemplate>
             </CarouselView.ItemTemplate>
         </CarouselView>
-        <IndicatorView x:Name="indicatorView"
-                       Margin="0,0,0,40"
-                       IndicatorColor="LightGray"
-                       SelectedIndicatorColor="DarkGray"
-                       HorizontalOptions="Center" 
-                       IndicatorSize="18"/>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+            <Button Text="Back" HorizontalOptions="StartAndExpand" Clicked="PrevPage_Clicked" x:Name="PrevPageButtonId"/>
+            <Button Text="Next" HorizontalOptions="EndAndExpand" Clicked="NextPage_Clicked" x:Name="NextPageButtonId"/>
+        </StackLayout>
+        
+        <IndicatorView BackgroundColor="Aquamarine" x:Name="indicatorView"
+                    Margin="0,0,0,40"
+                    IndicatorColor="LightGray"
+                    SelectedIndicatorColor="DarkGray"
+                    HorizontalOptions="Center" 
+                    IndicatorSize="18"/>
     </StackLayout>
 </ContentPage>

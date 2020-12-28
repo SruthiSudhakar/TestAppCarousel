@@ -10,21 +10,18 @@ namespace TestAppCarousel.Models
     {
         public static Chapter praseJson(string filename)
         {
-            string readline;
             string DhyanaShlokaText = DhyanaShloka.DhyanaShlokaText;
-            // Read the file and display it line by line.  
             List<string> textList = new List<string>(DhyanaShlokaText.Split('\n'));
-
-            //StreamReader file = new StreamReader(filename);
             string chapterName = "Dhyana";
             Chapter chapter = new Chapter();
             int lineNumber = 1;
             int shlokaNumber = 1;
             bool newShloka = false;
             Shloka chapterShloka = new Shloka(shlokaNumber);
-            for (int i=0; i < textList.Count; i++)// while ((readline = file.ReadLine()) != null)
-            {
-                if (textList[i].Equals("\r"))
+
+            for (int i=0; i < textList.Count; i++)
+            { 
+                if (textList[i].Equals("\r") | textList[i].Equals(" "))
                     continue;
                 if (newShloka)
                 {
@@ -38,15 +35,14 @@ namespace TestAppCarousel.Models
                 Line shlokaLine = new Line(lineNumber);
                 for (int x = 0; x < temp.Count; x++)
                 {
-                    shlokaLine.LineWords.Add(new Word(chapterName, shlokaNumber, lineNumber, temp[x]));
+                    string str = temp[x];
+                    shlokaLine.LineWords.Add(new Word(chapterName, shlokaNumber, lineNumber, str));
                 }
                 chapterShloka.ShlokaLines.Add(shlokaLine);
                 lineNumber += 1;
                 if (textList[i].Any(char.IsDigit))
                     newShloka = true;
             }
-
-            //file.Close();
             return chapter;
         }
     }

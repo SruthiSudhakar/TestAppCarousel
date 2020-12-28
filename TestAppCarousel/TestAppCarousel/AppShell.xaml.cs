@@ -6,16 +6,21 @@ using Xamarin.Forms;
 
 namespace TestAppCarousel
 {
-    public partial class AppShell : Xamarin.Forms.Shell
+    public partial class AppShell : Shell
     {
         public AppShell()
         {
             InitializeComponent();
+            RegisterRoutes();
         }
-
-        private async void OnMenuItemClicked(object sender, EventArgs e)
+        protected override void OnNavigating(ShellNavigatingEventArgs args)
         {
-            //await Shell.Current.GoToAsync("//LoginPage");
+            base.OnNavigating(args);
+        }
+        private void RegisterRoutes()
+        {
+            Routing.RegisterRoute("Home", typeof(HomePage));
+            Routing.RegisterRoute("AsessmentPage", typeof(AssessmentPage));
         }
     }
 }

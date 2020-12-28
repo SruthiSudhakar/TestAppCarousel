@@ -19,7 +19,7 @@ bhagavadgīte bhavadveṣiṇīm ||1||
 namo'stute vyāsa viśālabuddhe
 phullāravindāyatapatranetra |
 yena tvayā bhārata tailapūrṇaḥ
-prajvālito jñānamayaḥ pradīpaḥ||2||
+prajvālito jñānamayaḥ pradīpaḥ ||2||
 
 prapannapārijātāya
 totravetraikapāṇaye |
