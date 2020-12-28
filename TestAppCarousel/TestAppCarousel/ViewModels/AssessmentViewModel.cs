@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SkiaSharp;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -7,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Input;
 using TestAppCarousel.Models;
+using TestAppCarousel.Views;
 using Xamarin.Forms;
 
 namespace TestAppCarousel.ViewModels
@@ -27,22 +29,22 @@ namespace TestAppCarousel.ViewModels
         public ObservableCollection<StudentAndList> Students { get; set; }
         public ObservableCollection<StudentListGroup> StudentGroups { get; set; } = new ObservableCollection<StudentListGroup>();
         private ObservableCollection<Student> _students;
-        private int studentsPerPage = 4;
 
-        
+
         private readonly IPageService _pageService;
+
         public ICommand MistakeItemPressedCommand { get; set; }
         private StudentAndList _selectedStudentAndList;
-        public bool _mistakeShlokaSelected = false;
-        public bool MistakeShlokaSelected
-        {
-            get { return _mistakeShlokaSelected; }
-            set { SetValue(ref _mistakeShlokaSelected, value); }
-        }
-
-        public AssessmentViewModel(int numOfStudents, int studentsPerPage, PageService _pageService)
+        private Word _selectedWord;
+        private string _partOfWord = "";
+        private string _theWord = "";
+        public int numOfStudents = 0;
+        public int studentsPerPage = 0;
+        public string TheWord { get { return _theWord; } set { SetValue(ref _theWord, value); } }
+        public AssessmentViewModel(int numOfStudents, int studentsPerPage, List<Chapter> chapters, PageService _pageService)
         {
             this.studentsPerPage = studentsPerPage;
+            this.numOfStudents = numOfStudents;
             this._pageService = _pageService;
             _students = new ObservableCollection<Student>();
             for (int x = 1; x <= numOfStudents; x++)
@@ -51,12 +53,11 @@ namespace TestAppCarousel.ViewModels
             }
             Students = new ObservableCollection<StudentAndList>();
 
-            foreach (Student s in _students)
+            for (int s = 0; s < _students.Count; s++)
             {
 
-                Students.Add(new StudentAndList(s, ParseAndCreateChapterList.praseJson(@"C:\GitaAppData\XamrinGitaApps\GitaAssesmentApp\TestAppCarousel\TestAppCarousel\TestAppCarousel\Resources\meta_plain_chapter_00.txt")));
+                Students.Add(new StudentAndList(_students[s], chapters[s]));
             }
-
             int i = 0;
             while (i < _students.Count)
             {
@@ -66,34 +67,26 @@ namespace TestAppCarousel.ViewModels
                 i += studentsPerPage;
             }
             MistakeItemPressedCommand = new Command<ToolbarItem>((e) => MistakeItemPressedMethod(e));
-            MessagingCenter.Subscribe<StudentAndList, StudentAndList>(this, "SelectMistakeType", async (sender, arg) =>
+            MessagingCenter.Subscribe<AssessmentPage, Tuple<StudentAndList, Word, string>>(this, "MostRecentView", (sender, arg) =>
             {
-                if (MistakeShlokaSelected)
-                {
-                    _selectedStudentAndList._selectedWord.HilightedWord = Color.White;
-                }
-                _selectedStudentAndList = arg;
-                MistakeShlokaSelected = true;
+                _selectedStudentAndList = arg.Item1;
+                _selectedWord = arg.Item2;
+                _partOfWord = arg.Item3;
+                TheWord = _partOfWord;
             });
         }
 
         public void MistakeItemPressedMethod(ToolbarItem o)
         {
-            if (MistakeShlokaSelected)
+            if (o.Text.Equals("Undo"))
             {
-                if (o.Name.Equals("Undo"))
-                {
-                    _pageService.DisplayAlert("Undo Mistake " + _selectedStudentAndList.student.Name, "mitake: " + o.Name + ",  in pada: " + _selectedStudentAndList._selectedWord.WordText, "ok", "cancel");
-                    _selectedStudentAndList._selectedWord.HilightedWord = Color.White;
-                }
-                else
-                {
-
-                    _pageService.DisplayAlert("Mistake Marked For " + _selectedStudentAndList.student.Name, "mitake: " + o.Name + ",  in pada: " + _selectedStudentAndList._selectedWord.WordText, "ok", "cancel");
-                    _selectedStudentAndList._selectedWord.HilightedWord = Color.Orange;
-                }
-                MistakeShlokaSelected = false;
+                MessagingCenter.Send<AssessmentViewModel>(this, "UndoDrawing");
             }
+            else
+            {
+                _pageService.DisplayAlert("Undo Mistake " + _selectedStudentAndList.student.Name, "mitake: " + o.Text + ",  in pada: " + _selectedWord.WordText + ", partofword " + _partOfWord, "ok", "cancel");
+            }
+            MessagingCenter.Send<AssessmentViewModel>(this, "MistakeRegistered");
         }
     }
 }

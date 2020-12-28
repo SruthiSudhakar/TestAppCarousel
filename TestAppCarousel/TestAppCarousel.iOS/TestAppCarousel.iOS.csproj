@@ -65,6 +65,8 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="TouchEffect.cs" />
+    <Compile Include="TouchRecognizer.cs" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -141,5 +143,8 @@
       <Project>{E126FBA4-112F-4B64-B581-99E1C610702D}</Project>
       <Name>TestAppCarousel</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Renderers\" />
   </ItemGroup>
 </Project>
